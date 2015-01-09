@@ -23,12 +23,13 @@ public class Pole extends JLabel {
     
     final char litera;
     final char liczba;
-    private boolean occupied;
-    private BufferedImage figura;
+    boolean occupied;
+    Figure figura;
     Color tlo;
     AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
     
-    public Pole(char litera, char liczba, Color tlo){
+    
+    Pole(char liczba, char litera, Color tlo){
         this.litera = litera;
         this.liczba = liczba;
         setMaximumSize(new Dimension(110, 110));
@@ -37,12 +38,24 @@ public class Pole extends JLabel {
         this.tlo = tlo;
     }
 
+    public Figure getFigura() {
+        return figura;
+    }
+
+    public void setFigura(Figure figura) {
+        this.figura = figura;
+    }
+    
     public boolean isOccupied() {
         return occupied;
     }
 
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
+    }
+    
+    public char getLitera() {
+        return litera;
     }
 
     public char getLiczba() {
@@ -61,7 +74,7 @@ public class Pole extends JLabel {
     
     private void rysujFigurę(Graphics2D g2d){
         if(figura!=null){
-            g2d.drawImage(figura, 10, 10, null);
+            g2d.drawImage(figura.getIkona(), 10, 10, null);
         }
     }
     

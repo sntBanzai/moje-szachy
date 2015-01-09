@@ -10,28 +10,60 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- *
- * @author X870
+ * Niniejsza klasa reprezentuje obiekt szachownicy składającej się z zestawy 64
+ * obiektów klasy Pole. ({@link Pole Przejdź do dokumentacji klasy Pole}).
+ * @author Jerzy Małyszko
  */
 public class Szachownica extends JPanel {
     
+    /**
+     * Tablica zawierająca dwie stałe klasy Color, służącę jako źródło do pobierania
+     * koloru pola w metodzie {@link #nadajPoluKolor(int) nadajPoluKolor(int)}
+     */
     static Color[] kolory = {Color.LIGHT_GRAY, Color.GRAY};
+    /**
+     * Tablica zawierająca elementy służące do numerowania na osi X obiektów klasy {@link 
+     * Pole Pole} tworzonych w trakcie wykonywania konstruktora {@link #Szachownica() 
+     * klasy Szachownica}
+     */
     static char[] litery = {'a','b','c','d','e','f','g','h'};
+    /**
+     * Tablica zawierająca elementy służące do numerowania na osi Y obiektów klasy {@link 
+     * Pole Pole} tworzonych w trakcie wykonywania konstruktora {@link #Szachownica() 
+     * klasy Szachownica}
+     */
     static char[] liczby = {'1','2','3','4','5','6','7','8'};
+    /**
+     * Dwuwymiarowa tablica o wymiarach 8 na 8 przechowująca obiekty klasy Pole.
+     */
     final Pole[][] fieldSet = new Pole[8][8];
+    /**
+     * Zmienna pomocnicza wykorzystywana w procesie wykonania metody {@link #nadajPoluKolor(int) 
+     * nadajPoluKolor(int)}
+     */
     boolean flaga= true;
     
+    /**
+     * Publiczny bezparametrowy konstruktor klasy Szachownica. Tworzy na wstępie 
+     * cztery boczne panele (instancje klasy {@link JPanel JPanel}). Niniejsze 
+     * panele są następnie wypełniane oznaczeniami poszczególnych pól szachownicy
+     * na osi X oraz Y. 
+     * Następnie w dwóch zagnieżdżonych pętlach (jedna w drugiej) tworzone są obiekty
+     * klasy {@link Pole Pole}, każdy oznaczony unikatowym zestawem współrzędnych,
+     * pobranych ze statycznych pól klasy Szachownica {@link #litery litery} oraz
+     * {@link #liczby liczby}. Tworzone instancje klasy Pole umieszczane są wewnątrz
+     * pola instancji klasy Szachownica o nazwie {@link #fieldSet fieldSet}.
+     * 
+     * Utworzone elementy pozycjonowane są na ekranie za pomocą zarządców rozkładu
+     * pakietu Swing.
+     * 
+     */
     public Szachownica(){
         setLayout(new BorderLayout());
         JPanel inner = new JPanel();
@@ -92,9 +124,10 @@ public class Szachownica extends JPanel {
         inner.setMaximumSize(dim);
         inner.setMinimumSize(dim);
         for (int i = 0; i < fieldSet.length; i++) {
-            for (int j = fieldSet[i].length-1; j >= 0; j--) {
-                fieldSet[i][j] = new Pole(litery[i], liczby[j], nadajPoluKolor(i));
+            for (int j = 0; j < fieldSet[i].length; j++) {
+                fieldSet[i][j] = new Pole(liczby[i],litery[j], nadajPoluKolor(i));
                 inner.add(fieldSet[i][j]);
+                fieldSet[i][j].setToolTipText("Pole "+litery[j]+" "+liczby[i]);
             }
         }
         
@@ -105,11 +138,16 @@ public class Szachownica extends JPanel {
         super.paintComponent(g);
     }
         
-    
+    /**
+     * Jest to metoda pomocnicza, dba o to by pola szachownicy miały odpowiedni kolor.
+     * @param index Przy wywołaniu metody, jako argument przekazywany jest aktualny
+     * indeks tablicy "wyższego rzędu" pola {@link #fieldSet fieldSet}
+     * @return Zwraca instancję klasy java.awt.Color, który posłuży do nadania
+     * koloru obiektowy klasy {@link Pole Pole} w czasie wyświetlania na ekranie.
+     */
     public Color nadajPoluKolor(int index){
         Color toReturn = null;
         if(index==0||index==2||index==4||index==6){
-            System.out.println("Jestem tu");
             if(flaga){
                 toReturn = kolory[0];
                 flaga = false;
@@ -120,7 +158,6 @@ public class Szachownica extends JPanel {
             }
         }
         else{
-            System.out.println("a tero tu");
            if(flaga){
                 toReturn = kolory[1];
                 flaga = false;
@@ -132,7 +169,24 @@ public class Szachownica extends JPanel {
         }
         return toReturn;
     }
-
+    
+    /**
+     * Metoda pozwalająca uzyskać referencję do znajdującego się na szachownicy pola
+     * o zadanych parametrach.
+     * @param liczba Pozycja pola na osi Y (zakres od '1' do '8').
+     * @param litera Pozycja pola na osi X (zakres od 'a' do 'f').
+     * @return Zwraca referencję do poszukiwanego pola.
+     */
+    Pole seekField(char liczba, char litera){
+        Pole toReturn = new Pole('z', 'z', Color.PINK);
+        for (int i = 0; i < fieldSet.length; i++) {
+            for (int j = 0; j < fieldSet[i].length; j++) {
+                if(fieldSet[i][j].getLitera()==litera&&fieldSet[i][j].getLiczba()==liczba)
+                    toReturn = fieldSet[i][j];
+            }
+        }
+        return toReturn;
+    }
     
     
 }
