@@ -7,6 +7,7 @@ package com.mycompany.szachy;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -16,6 +17,8 @@ import javax.imageio.ImageIO;
  * @author X870
  */
 class King extends Figure {
+    
+    private HashSet<Pole> retVal;
 
     King(Team.Teams team) {
         this.team = team;
@@ -38,5 +41,29 @@ class King extends Figure {
             }
         }
     }
+
+    @Override
+    HashSet<Pole> establishAvailableMoves() {
+        retVal= new HashSet<>();
+        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()+1));
+        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()-1));
+        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()-1));
+        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()+1));
+        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()));
+        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()));
+        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(), this.getOccupiedField().getyCoo()-1));
+        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(), this.getOccupiedField().getyCoo()+1));
+        return retVal;
+    }
     
+    void checkMoveAvailability(Pole p){
+        int xTraversal = this.getOccupiedField().getxCoo() - p.getxCoo();
+        int yTraversal = this.getOccupiedField().getyCoo() - p.getyCoo();
+        if(!p.isOccupied()){
+            retVal.add(p);
+        }
+        else if(p.isOccupied()&&p.getFigura().getTeam()==establishOpposite()){
+            retVal.add(p);
+        }
+    }
 }

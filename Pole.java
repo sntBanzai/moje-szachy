@@ -21,29 +21,35 @@ import javax.swing.JLabel;
 public class Pole extends JLabel {
     
     
-    final char litera;
-    final char liczba;
+    private final char litera;
+    private final char liczba;
+    private final int xCoo;
+    private final int yCoo;
     boolean occupied;
     Figure figura;
     Color tlo;
     AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
     
-    
-    Pole(char liczba, char litera, Color tlo){
+    Pole(char liczba, char litera, Color tlo, int xCoo, int yCoo){
         this.litera = litera;
         this.liczba = liczba;
+        this.xCoo = xCoo;
+        this.yCoo = yCoo;
         setMaximumSize(new Dimension(110, 110));
         setPreferredSize(new Dimension(110, 110));
         setMinimumSize(new Dimension(110, 110));
         this.tlo = tlo;
     }
 
+   
     public Figure getFigura() {
         return figura;
     }
 
     public void setFigura(Figure figura) {
         this.figura = figura;
+        this.setToolTipText("<html>"+getToolTipText()+"<br/>"+this.getFigura().getClass().getSimpleName()+" "+this.getFigura().getTeam().name()+"</html>");
+        
     }
     
     public boolean isOccupied() {
@@ -61,6 +67,14 @@ public class Pole extends JLabel {
     public char getLiczba() {
         return liczba;
     }
+
+    public int getxCoo() {
+        return xCoo;
+    }
+
+    public int getyCoo() {
+        return yCoo;
+    }
     
     
     @Override
@@ -69,10 +83,10 @@ public class Pole extends JLabel {
         Graphics2D g2d = (Graphics2D) g;
         rysujTloPola(g2d);
         g2d.setComposite(ac);
-        rysujFigurę(g2d);
+        drawFigure(g2d);
     }
     
-    private void rysujFigurę(Graphics2D g2d){
+    private void drawFigure(Graphics2D g2d){
         if(figura!=null){
             g2d.drawImage(figura.getIkona(), 10, 10, null);
         }

@@ -42,5 +42,6 @@ package com.mycompany.szachy;
     
     enum Teams {
         Biali, Czarni
+        
     }
 }

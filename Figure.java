@@ -6,6 +6,7 @@
 package com.mycompany.szachy;
 
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 
 /**
  * Klasa abstrakcyjna stanowiąca podstawę do tworzenia klas reprezentujące
@@ -32,6 +33,9 @@ abstract class Figure {
      * Wartość boolowska wskazująca czy pion znajduje się na szachownicy, czy też
      * został już zbity. Do wykorzystania w dalszej implementacji.
      */
+    
+    Team.Teams oppositeTeam;
+    
     boolean onBoard;
     /**
      * Wskazuje informację jakie pole szachownicy (jeśli w ogóle) zajmuje dany pion.
@@ -42,6 +46,14 @@ abstract class Figure {
      * Bezparametrowy konstruktor automaycznie ustanawiający wartość {@link #onBoard}
      * jako prawdziwą(przy rozpoczynaniu gry}. 
      */
+    
+    HashSet<Pole> availableMoves;
+    
+    static Szachownica szachownica = SzachyExec.szachownica;
+    
+    static int maxX = szachownica.fieldSet[0].length;
+    static int maxY = szachownica.fieldSet.length;
+    
     Figure(){
         onBoard = true;
     }
@@ -57,7 +69,8 @@ abstract class Figure {
             return;
         }
         p.setOccupied(true);
-        p.setFigura(this);  
+        p.setFigura(this);
+        this.setOccupiedField(p);
     }
     /**
      * Metoda symulująca opuszczenie pola przez konkretny pion
@@ -107,7 +120,16 @@ abstract class Figure {
         return "Figure{" + "team=" + team + ", onBoard=" + onBoard + ", occupiedField=" + occupiedField + '}';
     }
 
+    abstract HashSet<Pole> establishAvailableMoves();
     
+    Team.Teams establishOpposite(){
+        Team.Teams retVal = null;
+        for (Team.Teams t:Team.Teams.values()){
+            if(t== this.getTeam()) continue;
+            retVal = t;
+        }
+        return retVal;
+    }
     
     
     

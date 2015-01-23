@@ -125,7 +125,7 @@ public class Szachownica extends JPanel {
         inner.setMinimumSize(dim);
         for (int i = 0; i < fieldSet.length; i++) {
             for (int j = 0; j < fieldSet[i].length; j++) {
-                fieldSet[i][j] = new Pole(liczby[i],litery[j], nadajPoluKolor(i));
+                fieldSet[i][j] = new Pole(liczby[i],litery[j], nadajPoluKolor(i), i, j);
                 inner.add(fieldSet[i][j]);
                 fieldSet[i][j].setToolTipText("Pole "+litery[j]+" "+liczby[i]);
             }
@@ -178,7 +178,7 @@ public class Szachownica extends JPanel {
      * @return Zwraca referencję do poszukiwanego pola.
      */
     Pole seekField(char liczba, char litera){
-        Pole toReturn = new Pole('z', 'z', Color.PINK);
+        Pole toReturn = null;
         for (int i = 0; i < fieldSet.length; i++) {
             for (int j = 0; j < fieldSet[i].length; j++) {
                 if(fieldSet[i][j].getLitera()==litera&&fieldSet[i][j].getLiczba()==liczba)
@@ -186,6 +186,10 @@ public class Szachownica extends JPanel {
             }
         }
         return toReturn;
+    }
+    
+    Pole seekField(int xCoo, int yCoo){
+        return fieldSet[xCoo][yCoo];
     }
     
     
