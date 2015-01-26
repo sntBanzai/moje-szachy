@@ -25,6 +25,7 @@ public class SzachyExec {
      */
     static Szachownica szachownica;
     static Game actualGame;
+
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable(){
             @Override
@@ -38,6 +39,7 @@ public class SzachyExec {
                    @Override
                    public void actionPerformed(ActionEvent ae){
                         actualGame= new Game();
+                        actualGame.turn(Team.Teams.Biali);
                    }
                    });
                 program.add(graj);
@@ -52,5 +54,5 @@ public class SzachyExec {
             }
         });
     }
-    
+   
 }

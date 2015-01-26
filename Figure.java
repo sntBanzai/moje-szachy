@@ -33,9 +33,7 @@ abstract class Figure {
      * Wartość boolowska wskazująca czy pion znajduje się na szachownicy, czy też
      * został już zbity. Do wykorzystania w dalszej implementacji.
      */
-    
-    Team.Teams oppositeTeam;
-    
+
     boolean onBoard;
     /**
      * Wskazuje informację jakie pole szachownicy (jeśli w ogóle) zajmuje dany pion.
@@ -51,8 +49,8 @@ abstract class Figure {
     
     static Szachownica szachownica = SzachyExec.szachownica;
     
-    static int maxX = szachownica.fieldSet[0].length;
-    static int maxY = szachownica.fieldSet.length;
+    static int maxX = szachownica.fieldSet[0].length-1;
+    static int maxY = szachownica.fieldSet.length-1;
     
     Figure(){
         onBoard = true;
@@ -84,6 +82,7 @@ abstract class Figure {
         }
         p.setOccupied(false);
         p.setFigura(null);
+
     }
 
     public boolean isOnBoard() {
@@ -122,17 +121,13 @@ abstract class Figure {
 
     abstract HashSet<Pole> establishAvailableMoves();
     
-    Team.Teams establishOpposite(){
+    Team.Teams establishOpposite(){ 
         Team.Teams retVal = null;
-        for (Team.Teams t:Team.Teams.values()){
-            if(t== this.getTeam()) continue;
+        for(Team.Teams t:Team.Teams.values()){
+            if (t==this.getTeam()) continue;
             retVal = t;
         }
         return retVal;
     }
-    
-    
-    
-    
-    
+  
 }

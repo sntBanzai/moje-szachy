@@ -12,6 +12,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.HashSet;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -128,6 +129,7 @@ public class Szachownica extends JPanel {
                 fieldSet[i][j] = new Pole(liczby[i],litery[j], nadajPoluKolor(i), i, j);
                 inner.add(fieldSet[i][j]);
                 fieldSet[i][j].setToolTipText("Pole "+litery[j]+" "+liczby[i]);
+                fieldSet[i][j].initialToolTip = "Pole "+litery[j]+" "+liczby[i];
             }
         }
         
@@ -191,6 +193,23 @@ public class Szachownica extends JPanel {
     Pole seekField(int xCoo, int yCoo){
         return fieldSet[xCoo][yCoo];
     }
+    
+    HashSet<Pole> getFieldsOccupiedBy(Team.Teams t){
+        HashSet<Pole> retVal = new HashSet<>();
+        for (int i = 0; i < fieldSet.length; i++) {
+            for (int j = 0; j < fieldSet[i].length; j++) {
+                if(fieldSet[i][j].isOccupied()&&fieldSet[i][j].getFigura().getTeam()==t){
+                    retVal.add(fieldSet[i][j]);
+                }
+            }
+        }
+        return retVal;
+    }
+
+    public Pole[][] getFieldSet() {
+        return fieldSet;
+    }
+    
     
     
 }

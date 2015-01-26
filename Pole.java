@@ -29,6 +29,7 @@ public class Pole extends JLabel {
     Figure figura;
     Color tlo;
     AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
+    String initialToolTip;
     
     Pole(char liczba, char litera, Color tlo, int xCoo, int yCoo){
         this.litera = litera;
@@ -48,7 +49,12 @@ public class Pole extends JLabel {
 
     public void setFigura(Figure figura) {
         this.figura = figura;
-        this.setToolTipText("<html>"+getToolTipText()+"<br/>"+this.getFigura().getClass().getSimpleName()+" "+this.getFigura().getTeam().name()+"</html>");
+        if(figura!=null){
+            this.setToolTipText("<html>"+getToolTipText()+"<br/>"+this.getFigura().getClass().getSimpleName()+" "+this.getFigura().getTeam().name()+"</html>");
+        }
+        else{
+            this.setToolTipText(initialToolTip);
+        }
         
     }
     

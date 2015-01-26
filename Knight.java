@@ -44,35 +44,35 @@ final class Knight extends Figure {
     HashSet<Pole> establishAvailableMoves() {
         HashSet<Pole> retVal = new HashSet<>();
         Pole jump = null;
-        if(!((this.getOccupiedField().getyCoo()-2<0)&&(this.getOccupiedField().getxCoo()==0))){
+        if((this.getOccupiedField().getyCoo()-2>=0)&&(this.getOccupiedField().getxCoo()!=0)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()-2);
             if(canJump(jump)) retVal.add(jump);
         }
-        if(!((this.getOccupiedField().getyCoo()-2<0)&&(this.getOccupiedField().getxCoo()==maxX))){
+        if((this.getOccupiedField().getyCoo()-2>=0)&&(this.getOccupiedField().getxCoo()!=maxX)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()-2);
             if(canJump(jump)) retVal.add(jump);
         }
-        if(!((this.getOccupiedField().getyCoo()+2>maxY)&&(this.getOccupiedField().getxCoo()==0))){
+        if((this.getOccupiedField().getyCoo()+2<=maxY)&&(this.getOccupiedField().getxCoo()!=0)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()+2);
             if(canJump(jump)) retVal.add(jump);
         }
-        if(!((this.getOccupiedField().getyCoo()+2>maxY)&&(this.getOccupiedField().getxCoo()==maxX))){
+        if((this.getOccupiedField().getyCoo()+2<=maxY)&&(this.getOccupiedField().getxCoo()!=maxX)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()+2);
             if(canJump(jump)) retVal.add(jump);
         }
-        if(!((this.getOccupiedField().getxCoo()-2<0)&&(this.getOccupiedField().getyCoo()==0))){
+        if((this.getOccupiedField().getxCoo()-2>=0)&&(this.getOccupiedField().getyCoo()!=0)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()-2, this.getOccupiedField().getyCoo()-1);
             if(canJump(jump)) retVal.add(jump);
         }
-        if(!((this.getOccupiedField().getxCoo()-2<0)&&(this.getOccupiedField().getyCoo()==maxY))){
+        if((this.getOccupiedField().getxCoo()-2>=0)&&(this.getOccupiedField().getyCoo()!=maxY)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()-2, this.getOccupiedField().getyCoo()+1);
             if(canJump(jump)) retVal.add(jump);
         }
-        if(!((this.getOccupiedField().getyCoo()+2>maxY)&&(this.getOccupiedField().getxCoo()==0))){
+        if((this.getOccupiedField().getxCoo()+2<=maxY)&&(this.getOccupiedField().getyCoo()!=0)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()+2, this.getOccupiedField().getyCoo()-1);
             if(canJump(jump)) retVal.add(jump);
         }
-        if(!((this.getOccupiedField().getyCoo()+2>maxY)&&(this.getOccupiedField().getxCoo()==maxX))){
+        if((this.getOccupiedField().getyCoo()+2<=maxY)&&(this.getOccupiedField().getxCoo()!=maxX)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()+2, this.getOccupiedField().getyCoo()+1);
             if(canJump(jump)) retVal.add(jump);
         }
