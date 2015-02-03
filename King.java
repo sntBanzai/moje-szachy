@@ -46,20 +46,36 @@ class King extends Figure {
     @Override
     HashSet<Pole> establishAvailableMoves() {
         retVal= new HashSet<>();
-        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()+1));
-        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()-1));
-        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()-1));
-        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()+1));
-        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()));
-        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()));
-        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(), this.getOccupiedField().getyCoo()-1));
-        checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(), this.getOccupiedField().getyCoo()+1));
+        if(this.getOccupiedField().getxCoo()+1<=maxX){
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()));
+        }
+        if(this.getOccupiedField().getxCoo()-1>=0){
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()));
+        }
+        if(this.getOccupiedField().getyCoo()+1<=maxY){
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(), this.getOccupiedField().getyCoo()+1));
+        }
+        if(this.getOccupiedField().getyCoo()-1>=0){
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(), this.getOccupiedField().getyCoo()-1));
+        }
+        if(this.getOccupiedField().getxCoo()+1<=maxX&&this.getOccupiedField().getyCoo()+1<=maxY){
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()+1));
+        }
+        if(this.getOccupiedField().getxCoo()-1>=0&&this.getOccupiedField().getyCoo()-1>=0){
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()-1));
+        }
+        if(this.getOccupiedField().getxCoo()+1<=maxX&&this.getOccupiedField().getyCoo()-1>=0){
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()-1));
+        }
+        if(this.getOccupiedField().getxCoo()-1>=0&&this.getOccupiedField().getyCoo()-1<maxY){
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()+1));
+        }
         return retVal;
     }
     
     void checkMoveAvailability(Pole p){
-        int xTraversal = this.getOccupiedField().getxCoo() - p.getxCoo();
-        int yTraversal = this.getOccupiedField().getyCoo() - p.getyCoo();
+        int xTraversal = p.getxCoo() - this.getOccupiedField().getxCoo();
+        int yTraversal = p.getyCoo() -this.getOccupiedField().getyCoo();
         if(!p.isOccupied()){
             retVal.add(p);
         }
