@@ -24,7 +24,7 @@ public class SzachyExec {
      * @param args the command line arguments
      */
     static Szachownica szachownica;
-    static Game actualGame;
+   
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable(){
@@ -38,8 +38,8 @@ public class SzachyExec {
                 graj.addActionListener(new ActionListener(){
                    @Override
                    public void actionPerformed(ActionEvent ae){
-                        actualGame= new Game();
-                        actualGame.turn(Team.Teams.Biali);
+                        Game g = new Game();
+                        g.playTheGame();
                    }
                    });
                 program.add(graj);

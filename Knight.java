@@ -20,6 +20,7 @@ final class Knight extends Figure {
     
     Knight(Team.Teams team) {
         this.team = team;
+        this.rank = 2;
         File f1 = new File(Path+"whiteKnight.jpg");
         File f2 = new File(Path+"blackKnight.jpg");
         if(team==Team.Teams.Biali){
@@ -68,11 +69,11 @@ final class Knight extends Figure {
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()-2, this.getOccupiedField().getyCoo()+1);
             if(canJump(jump)) retVal.add(jump);
         }
-        if((this.getOccupiedField().getxCoo()+2<=maxY)&&(this.getOccupiedField().getyCoo()!=0)){
+        if((this.getOccupiedField().getxCoo()+2<=maxX)&&(this.getOccupiedField().getyCoo()!=0)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()+2, this.getOccupiedField().getyCoo()-1);
             if(canJump(jump)) retVal.add(jump);
         }
-        if((this.getOccupiedField().getyCoo()+2<=maxY)&&(this.getOccupiedField().getxCoo()!=maxX)){
+        if((this.getOccupiedField().getxCoo()+2<=maxX)&&(this.getOccupiedField().getyCoo()!=maxY)){
             jump = szachownica.seekField(this.getOccupiedField().getxCoo()+2, this.getOccupiedField().getyCoo()+1);
             if(canJump(jump)) retVal.add(jump);
         }

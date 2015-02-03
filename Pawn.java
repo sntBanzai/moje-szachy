@@ -24,6 +24,7 @@ final class Pawn extends Figure {
 
     Pawn(Team.Teams team) {
         this.team = team;
+        this.rank = 1;
         File f1 = new File(Path+"whitePawn.jpg");
         File f2 = new File(Path+"blackPawn.jpg");
         if(team==Team.Teams.Biali){
@@ -52,16 +53,14 @@ final class Pawn extends Figure {
             case Biali:
                 System.out.println("biali");
                 Pole ahead = null;
-                System.out.println("Olupowanie pole "+this.getOccupiedField());
                 if(this.getOccupiedField().getxCoo()!=maxX){
                     if(isFirstMove){ 
                         ahead = szachownica.seekField(this.getOccupiedField().getxCoo()+2, this.getOccupiedField().getyCoo());
-                        returnVal.add(ahead);
+                        if(!ahead.isOccupied()) returnVal.add(ahead);
                     }
                     ahead = szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo());
                     System.out.println(ahead);
                     if(!ahead.isOccupied()) returnVal.add(ahead);
-                    System.out.println(!ahead.isOccupied());
                 }
                 Pole cross = null;
                 if((this.getOccupiedField().getxCoo()!=maxX)&&(this.getOccupiedField().getyCoo()!=0)){
@@ -77,8 +76,8 @@ final class Pawn extends Figure {
                 Pole ahead2 = null;
                 if(this.getOccupiedField().getxCoo()!=0){
                     if(isFirstMove){ 
-                        ahead = szachownica.seekField(this.getOccupiedField().getxCoo()-2, this.getOccupiedField().getyCoo());
-                        returnVal.add(ahead);
+                        ahead2 = szachownica.seekField(this.getOccupiedField().getxCoo()-2, this.getOccupiedField().getyCoo());
+                        if(!ahead2.isOccupied()) returnVal.add(ahead2);
                     }
                     ahead2 = szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo());
                     if(!ahead2.isOccupied()) returnVal.add(ahead2);
@@ -89,7 +88,7 @@ final class Pawn extends Figure {
                     if(canMove(cross2)) returnVal.add(cross2);
                 }
                 if(this.getOccupiedField().getxCoo()!=0&&(this.getOccupiedField().getyCoo()!=maxY)){
-                    cross2 = szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()-1);
+                    cross2 = szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()+1);
                     if(canMove(cross2)) returnVal.add(cross2);
                 }
                 break;
@@ -112,5 +111,5 @@ final class Pawn extends Figure {
         p.setFigura(null);
         if(isFirstMove) this.isFirstMove = false;
     }
-    
+
 }

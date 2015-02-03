@@ -23,6 +23,7 @@ class Bishop extends Figure {
     
     Bishop(Team.Teams team) {
         this.team = team;
+        this.rank = 2;
         File f1 = new File(Path+"whiteBishop.jpg");
         File f2 = new File(Path+"blackBishop.jpg");
         if(team==Team.Teams.Biali){
@@ -50,12 +51,15 @@ class Bishop extends Figure {
         if(this.getOccupiedField().getxCoo()+1<=maxX&&this.getOccupiedField().getyCoo()+1<=maxY){
             checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()+1));
         }
+        auxiliary = this.getOccupiedField();
         if(this.getOccupiedField().getxCoo()-1>=0&&this.getOccupiedField().getyCoo()-1>=0){
             checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()-1));
         }
+        auxiliary = this.getOccupiedField();
         if(this.getOccupiedField().getxCoo()+1<=maxX&&this.getOccupiedField().getyCoo()-1>=0){
             checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()-1));
         }
+        auxiliary = this.getOccupiedField();
         if(this.getOccupiedField().getxCoo()-1>=0&&this.getOccupiedField().getyCoo()-1<maxY){
             checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()+1));
         }
@@ -63,19 +67,27 @@ class Bishop extends Figure {
     }
     
     void checkMoveAvailability(Pole p){
-        int xTraversal = auxiliary.getxCoo() - p.getxCoo();
-        int yTraversal = auxiliary.getyCoo() - p.getyCoo();
+        int xTraversal = p.getxCoo()- auxiliary.getxCoo();
+        System.out.println("xTraversal "+xTraversal);
+        int yTraversal = p.getyCoo() - auxiliary.getyCoo();
+        System.out.println("yTraversal "+yTraversal);
         if(!p.isOccupied()){
             retVal.add(p);
             auxiliary = p;
             if((xTraversal>0&&p.getxCoo()==maxX)||(yTraversal>0&&p.getyCoo()==maxY)||(xTraversal<0&&p.getxCoo()==0)||(yTraversal<0&&p.getyCoo()==0)){
+                System.out.println("now i'm here");
+                System.out.println(p.getLiczba() +" "+ p.getLitera());
                 return;
             }
             else {
+                System.out.println("now i'm there");
+                System.out.println(p.getLiczba() +" "+ p.getLitera());
                 checkMoveAvailability(szachownica.seekField(p.getxCoo()+xTraversal, p.getyCoo()+yTraversal)); 
             }
         }
         else if(p.isOccupied()&&p.getFigura().getTeam()==establishOpposite()){
+            System.out.println("down in the city just you and me");
+            System.out.println(p.getLiczba() +" "+ p.getLitera());
             retVal.add(p);
         }
     }

@@ -27,6 +27,7 @@ class Rook extends Figure {
 
     Rook(Team.Teams team) {
         this.team = team;
+        this.rank = 2;
         File f1 = new File(Path+"whiteRook.jpg");
         File f2 = new File(Path+"blackRook.jpg");
         if(team==Team.Teams.Biali){

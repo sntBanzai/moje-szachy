@@ -22,6 +22,7 @@ class King extends Figure {
 
     King(Team.Teams team) {
         this.team = team;
+        this.rank = 10;
         File f1 = new File(Path+"whiteKing.jpg");
         File f2 = new File(Path+"blackKing.jpg");
         if(team==Team.Teams.Biali){

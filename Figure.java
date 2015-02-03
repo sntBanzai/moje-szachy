@@ -51,6 +51,7 @@ abstract class Figure {
     
     static int maxX = szachownica.fieldSet[0].length-1;
     static int maxY = szachownica.fieldSet.length-1;
+    int rank;
     
     Figure(){
         onBoard = true;
@@ -128,6 +129,10 @@ abstract class Figure {
             retVal = t;
         }
         return retVal;
+    }
+
+    public int getRank() {
+        return rank;
     }
   
 }

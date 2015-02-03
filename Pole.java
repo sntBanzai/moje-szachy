@@ -11,7 +11,9 @@ import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 
 /**
@@ -31,6 +33,7 @@ public class Pole extends JLabel {
     AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
     String initialToolTip;
     
+    
     Pole(char liczba, char litera, Color tlo, int xCoo, int yCoo){
         this.litera = litera;
         this.liczba = liczba;
@@ -49,7 +52,7 @@ public class Pole extends JLabel {
 
     public void setFigura(Figure figura) {
         this.figura = figura;
-        if(figura!=null){
+        if(this.figura!=null){
             this.setToolTipText("<html>"+getToolTipText()+"<br/>"+this.getFigura().getClass().getSimpleName()+" "+this.getFigura().getTeam().name()+"</html>");
         }
         else{
@@ -108,5 +111,5 @@ public class Pole extends JLabel {
     public String toString() {
         return "Pole{" + "litera= " + litera + ", liczba= " + liczba + ", tlo= " + tlo + '}';
     }
-    
+
 }

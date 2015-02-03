@@ -23,6 +23,7 @@ class Queen extends Figure {
     
     Queen(Team.Teams team) {
         this.team = team;
+        this.rank = 3;
         File f1 = new File(Path+"whiteQueen.jpg");
         File f2 = new File(Path+"blackQueen.jpg");
         if(team==Team.Teams.Biali){
