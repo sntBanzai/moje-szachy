@@ -58,7 +58,9 @@ class Game {
                 public void mouseClicked(MouseEvent e) {
                     eraseTimers();
                     for (final Pole pp : p.getFigura().establishAvailableMoves()) {
-                        System.out.println(pp);
+                         for(MouseListener ms:pp.getMouseListeners()){
+                            pp.removeMouseListener(ms);
+                         }
                         gt = new Timer(350, new ActionListener() {
 
                             Color[] borderColors = {Color.WHITE, Color.GRAY};
