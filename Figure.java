@@ -40,10 +40,6 @@ abstract class Figure {
      */
     Pole occupiedField;
     
-    /**
-     * Bezparametrowy konstruktor automaycznie ustanawiający wartość {@link #onBoard}
-     * jako prawdziwą(przy rozpoczynaniu gry}. 
-     */
     
     HashSet<Pole> availableMoves;
     
@@ -53,6 +49,10 @@ abstract class Figure {
     static int maxY = szachownica.fieldSet.length-1;
     int rank;
     
+    /**
+     * Bezparametrowy konstruktor automaycznie ustanawiający wartość {@link #onBoard}
+     * jako prawdziwą(przy rozpoczynaniu gry}. 
+     */
     Figure(){
         onBoard = true;
     }
@@ -117,7 +117,7 @@ abstract class Figure {
 
     @Override
     public String toString() {
-        return "Figure{" + "team=" + team + ", onBoard=" + onBoard + ", occupiedField=" + occupiedField + '}';
+        return ""+this.getClass().getSimpleName();
     }
 
     abstract HashSet<Pole> establishAvailableMoves();

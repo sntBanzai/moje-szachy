@@ -32,6 +32,7 @@ public class Pole extends JLabel {
     Color tlo;
     AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
     String initialToolTip;
+    boolean shouldIClearBorder = true;
     
     
     Pole(char liczba, char litera, Color tlo, int xCoo, int yCoo){
@@ -109,7 +110,16 @@ public class Pole extends JLabel {
 
     @Override
     public String toString() {
-        return "Pole{" + "litera= " + litera + ", liczba= " + liczba + ", tlo= " + tlo + '}';
+        return "Pole " + litera + " " + liczba ;
     }
 
+    public boolean shouldIClearBorder() {
+        return shouldIClearBorder;
+    }
+
+    public void setShouldIClearBorder(boolean shouldIClearBorder) {
+        this.shouldIClearBorder = shouldIClearBorder;
+    }
+
+    
 }
