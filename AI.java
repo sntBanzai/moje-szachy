@@ -7,12 +7,14 @@ package com.mycompany.szachy;
 
 import static com.mycompany.szachy.Game.szachownica;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.Timer;
 
 /**
  *
@@ -20,9 +22,11 @@ import javax.swing.BorderFactory;
  */
 public class AI {
 
+    private final static Logger logger = Logger.getLogger("Game.class");
     static Szachownica szach = SzachyExec.szachownica;
     private Team.Teams controlled;
     private Game g;
+    private Timer t;
 
     public AI(Team.Teams controlled, Game g) {
         this.controlled = controlled;
@@ -32,18 +36,18 @@ public class AI {
     void doTurn() {
         Pole chosen = null;
         Pole destination = null;
+        boolean ersties = true;
         for (Pole p : szachownica.getFieldsOccupiedBy(this.getControlled())) {
             for (Pole pp : p.getFigura().establishAvailableMoves()) {
                 if (pp.isOccupied() && pp.getFigura().getTeam() != controlled) {
-                    if (destination != null) {
-                        if (destination.getFigura().getRank() < pp.getFigura().getRank()) {
-                            destination = pp;
-                            chosen = p;
-                        }
-                        else{
-                            destination = pp;
-                            chosen = p;
-                        }
+                    if (ersties) {
+                        destination = pp;
+                        chosen = p;
+                        ersties = false;
+                    }
+                    if (destination != null && destination.getFigura().getRank() < pp.getFigura().getRank()) {
+                        destination = pp;
+                        chosen = p;
                     }
                 }
             }
@@ -56,31 +60,48 @@ public class AI {
             transformed = new ArrayList<>(chosen.getFigura().establishAvailableMoves());
             destination = transformed.get(new Random().nextInt(transformed.size()));
         }
+        showWhereYoullMove(chosen, destination);
+        move(chosen, destination);
+    }
+
+    private void showWhereYoullMove(Pole chosen, Pole destination) {
         chosen.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
-        if(destination.isOccupied()){
+        if (destination.isOccupied()) {
             destination.setBorder(BorderFactory.createLineBorder(Color.RED, 5));
-        }
-        else{
+        } else {
             destination.setBorder(BorderFactory.createLineBorder(Color.WHITE, 5));
         }
         chosen.repaint();
         destination.repaint();
-//        try {
-//            TimeUnit.SECONDS.sleep(3L);
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(AI.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        chosen.setBorder(null);
-        destination.setBorder(null);
-        chosen.getFigura().deployOnField(destination);
-        chosen.getFigura().releaseField(chosen);
-        chosen.repaint();
-        destination.repaint();
-        g.turn(destination.getFigura().establishOpposite());
     }
 
     public Team.Teams getControlled() {
         return controlled;
+    }
+    
+    private void move(final Pole fromWhere, final Pole where){
+        t = new Timer(3000, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fromWhere.setBorder(null);
+                where.setBorder(null);
+                if(where.isOccupied()){
+                    where.removeActualFigure();
+                }
+                fromWhere.getFigura().deployOnField(where);
+                fromWhere.getFigura().releaseField(fromWhere);
+                fromWhere.repaint();
+                where.repaint();
+                logger.log(Level.INFO, "Wykonano ruch z  " + fromWhere.toString() + " na  "
+                        + where.toString() + ", drużyna " + where.getFigura().getTeam()
+                        + ", figura " + where.getFigura());
+                g.turn(where.getFigura().establishOpposite(), t);
+               
+            }
+        });
+        t.start();
+        
     }
 
 }

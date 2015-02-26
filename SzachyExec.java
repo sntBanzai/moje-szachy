@@ -20,12 +20,12 @@ import javax.swing.JMenuItem;
  */
 public class SzachyExec {
 
-    /**
-     * @param args the command line arguments
-     */
     static Szachownica szachownica;
    
 
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable(){
             @Override

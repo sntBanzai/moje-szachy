@@ -11,8 +11,11 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.Queue;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -49,6 +52,8 @@ public class Szachownica extends JPanel {
      * nadajPoluKolor(int)}
      */
     boolean flaga= true;
+    private Deque<Pole> zbiteBiale = new ArrayDeque<>(16);
+    private Queue<Pole> zbiteCzarne = new ArrayDeque<>(16);
     
     /**
      * Publiczny bezparametrowy konstruktor klasy Szachownica. Tworzy na wstępie 
@@ -67,6 +72,9 @@ public class Szachownica extends JPanel {
      */
     public Szachownica(){
         setLayout(new BorderLayout());
+        JPanel chessBoard = new JPanel(new BorderLayout());
+        JPanel leftArea = new JPanel(new GridLayout(8, 2));
+        JPanel rightArea = new JPanel(new GridLayout(8, 2));
         JPanel inner = new JPanel();
         JPanel outerN = new JPanel();
         JPanel outerE = new JPanel();
@@ -114,11 +122,11 @@ public class Szachownica extends JPanel {
                 bok.add(blank2, BorderLayout.WEST);
             }
         }
-        this.add(inner, BorderLayout.CENTER);
-        this.add(outerN, BorderLayout.NORTH);
-        this.add(outerE, BorderLayout.EAST);
-        this.add(outerS, BorderLayout.SOUTH);
-        this.add(outerW, BorderLayout.WEST);
+        chessBoard.add(inner, BorderLayout.CENTER);
+        chessBoard.add(outerN, BorderLayout.NORTH);
+        chessBoard.add(outerE, BorderLayout.EAST);
+        chessBoard.add(outerS, BorderLayout.SOUTH);
+        chessBoard.add(outerW, BorderLayout.WEST);
         inner.setLayout(new GridLayout(8,8));
         Dimension dim = new Dimension(880,880);
         inner.setPreferredSize(dim);
@@ -132,7 +140,23 @@ public class Szachownica extends JPanel {
                 fieldSet[i][j].initialToolTip = "Pole "+litery[j]+" "+liczby[i];
             }
         }
-        
+        this.add(chessBoard, BorderLayout.CENTER);
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 2; j++) {
+                Pole p = new Pole('z', '9', Color.WHITE, i, j);
+                leftArea.add(p);
+                zbiteBiale.add(p);
+            }
+        }
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 2; j++) {
+                Pole p = new Pole('z', '9', Color.WHITE, i, j);
+                rightArea.add(p);
+                zbiteCzarne.add(p);
+            }
+        }
+        this.add(leftArea, BorderLayout.WEST);
+        this.add(rightArea, BorderLayout.EAST);
     }
     
     @Override
@@ -208,6 +232,14 @@ public class Szachownica extends JPanel {
 
     public Pole[][] getFieldSet() {
         return fieldSet;
+    }
+
+    public Deque<Pole> getZbiteBiale() {
+        return zbiteBiale;
+    }
+
+    public Queue<Pole> getZbiteCzarne() {
+        return zbiteCzarne;
     }
     
     

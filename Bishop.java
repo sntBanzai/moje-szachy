@@ -60,7 +60,7 @@ class Bishop extends Figure {
             checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()-1));
         }
         auxiliary = this.getOccupiedField();
-        if(this.getOccupiedField().getxCoo()-1>=0&&this.getOccupiedField().getyCoo()-1<maxY){
+        if(this.getOccupiedField().getxCoo()-1>=0&&this.getOccupiedField().getyCoo()+1<maxY){
             checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()+1));
         }
         return retVal;

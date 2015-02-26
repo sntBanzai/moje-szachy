@@ -69,11 +69,13 @@ class Game {
     }
 
     void playTheGame() {
-        turn(Team.Teams.Biali);
+        turn(Team.Teams.Biali, null);
 
     }
 
-    void turn(final Team.Teams color) {
+    void turn(final Team.Teams color, Timer t) {
+        
+        if(t!=null) t.stop();
 
         if (komp.getControlled() == color) {
             komp.doTurn();
@@ -144,20 +146,25 @@ class Game {
                                     }
                                     System.out.println("Pole p" + p);
                                     System.out.println("Pole pp " + pp);
+                                    if(pp.isOccupied()){
+                                        pp.removeActualFigure();
+                                    }
                                     p.getFigura().deployOnField(pp);
                                     pp.repaint();
                                     p.getFigura().releaseField(p);
                                     p.repaint();
-                                    logger.log(Level.INFO, "Wykonano ruch z  " + p.toString() + " na  " + pp.toString() + ", drużyna " + pp.getFigura().getTeam() + ", figura " + pp.getFigura());
+                                    logger.log(Level.INFO, "Wykonano ruch z  " +
+                                            p.toString() + " na  " + pp.toString() + 
+                                            ", drużyna " + pp.getFigura().getTeam() + 
+                                            ", figura " + pp.getFigura());
                                     eraseTimers();
                                     whichHaveListeners();
                                     p.setShouldIClearBorder(true);
-                                    turn(pp.getFigura().establishOpposite());
+                                    turn(pp.getFigura().establishOpposite(), null);
                                 }
                             });
                         }
                     }
-
                 });
             }
         }
