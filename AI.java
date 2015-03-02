@@ -34,6 +34,9 @@ public class AI {
     }
 
     void doTurn() {
+        if (g.isKingJeopardized(controlled).size()>0) {
+            defendTheKing();
+        } else {
         Pole chosen = null;
         Pole destination = null;
         boolean ersties = true;
@@ -63,6 +66,7 @@ public class AI {
         showWhereYoullMove(chosen, destination);
         move(chosen, destination);
     }
+    }
 
     private void showWhereYoullMove(Pole chosen, Pole destination) {
         chosen.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
@@ -79,14 +83,14 @@ public class AI {
         return controlled;
     }
     
-    private void move(final Pole fromWhere, final Pole where){
+    private void move(final Pole fromWhere, final Pole where) {
         t = new Timer(3000, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 fromWhere.setBorder(null);
                 where.setBorder(null);
-                if(where.isOccupied()){
+                if (where.isOccupied()) {
                     where.removeActualFigure();
                 }
                 fromWhere.getFigura().deployOnField(where);
@@ -103,5 +107,9 @@ public class AI {
         t.start();
         
     }
+
+    private void defendTheKing() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+}
 
 }

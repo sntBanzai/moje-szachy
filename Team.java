@@ -40,8 +40,18 @@ package com.mycompany.szachy;
         return name;
     }
     
+    public Teams oppositeTeam(){
+        Team.Teams retVal = null;
+        for(Team.Teams t:Team.Teams.values()){
+            if (t==this.getName()) continue;
+            retVal = t;
+        }
+        return retVal;
+    }
+    
     enum Teams {
         Biali, Czarni
         
     }
+    
 }

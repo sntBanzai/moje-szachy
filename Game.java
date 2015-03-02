@@ -15,6 +15,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -75,11 +77,17 @@ class Game {
 
     void turn(final Team.Teams color, Timer t) {
         
-        if(t!=null) t.stop();
+        if (t != null) {
+            t.stop();
+        }
 
         if (komp.getControlled() == color) {
             komp.doTurn();
         } else {
+            HashSet<Pole> whoJeopardises;
+            if ((whoJeopardises = isKingJeopardized(color)).size() > 0) {
+                defendTheKing(whoJeopardises);
+            } else {
             for (final Pole p : szachownica.getFieldsOccupiedBy(color)) {
                 p.addMouseListener(new MouseAdapter() {
 
@@ -104,38 +112,7 @@ class Game {
                             for (MouseListener ms : pp.getMouseListeners()) {
                                 pp.removeMouseListener(ms);
                             }
-                            gt = new Timer(350, new ActionListener() {
-
-                                Color[] borderColors = {Color.WHITE, Color.GRAY};
-                                Color[] oppositeTeamOcc = {Color.RED, Color.GRAY};
-                                boolean flag = true;
-
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    if (pp.isOccupied()) {
-                                        if (flag) {
-                                            pp.setBorder(BorderFactory.createLineBorder(oppositeTeamOcc[0], 5));
-                                            pp.repaint();
-                                            flag = false;
-                                        } else {
-                                            pp.setBorder(BorderFactory.createLineBorder(oppositeTeamOcc[1], 5));
-                                            pp.repaint();
-                                            flag = true;
-                                        }
-                                    } else {
-                                        if (flag) {
-                                            pp.setBorder(BorderFactory.createLineBorder(borderColors[0], 5));
-                                            pp.repaint();
-                                            flag = false;
-                                        } else {
-                                            pp.setBorder(BorderFactory.createLineBorder(borderColors[1], 5));
-                                            pp.repaint();
-                                            flag = true;
-                                        }
-                                    }
-
-                                }
-                            });
+                                gt = new Timer(350, new FlashingFieldBorders(pp));
                             gt.start();
                             fieldTimers.add(gt);
                             pp.addMouseListener(new MouseAdapter() {
@@ -144,19 +121,17 @@ class Game {
                                     if (p.getFigura() == null) {
                                         return;
                                     }
-                                    System.out.println("Pole p" + p);
-                                    System.out.println("Pole pp " + pp);
-                                    if(pp.isOccupied()){
+                                        if (pp.isOccupied()) {
                                         pp.removeActualFigure();
                                     }
                                     p.getFigura().deployOnField(pp);
                                     pp.repaint();
                                     p.getFigura().releaseField(p);
                                     p.repaint();
-                                    logger.log(Level.INFO, "Wykonano ruch z  " +
-                                            p.toString() + " na  " + pp.toString() + 
-                                            ", drużyna " + pp.getFigura().getTeam() + 
-                                            ", figura " + pp.getFigura());
+                                        logger.log(Level.INFO, "Wykonano ruch z  "
+                                                + p.toString() + " na  " + pp.toString()
+                                                + ", druĹĽyna " + pp.getFigura().getTeam()
+                                                + ", figura " + pp.getFigura());
                                     eraseTimers();
                                     whichHaveListeners();
                                     p.setShouldIClearBorder(true);
@@ -165,9 +140,11 @@ class Game {
                             });
                         }
                     }
+
                 });
             }
         }
+    }
     }
 
     final void deployFigures(Team t) {
@@ -233,4 +210,124 @@ class Game {
         }
     }
 
+    public HashSet<Pole> isKingJeopardized(Team.Teams t) {
+        Pole kingsField = null;
+        HashSet<Pole> whoJeopardiseses = new HashSet<>();
+        kingsField = whereIsTheKing(t);
+        for (Pole p : SzachyExec.szachownica.getFieldsOccupiedBy(t.oppositeTeam())) {
+            HashSet<Pole> moves = p.getFigura().establishAvailableMoves();
+            if (moves.contains(kingsField)) {
+                whoJeopardiseses.add(p);
+}
+        }
+        return whoJeopardiseses;
+    }
+
+    Pole whereIsTheKing(Team.Teams t) {
+        Pole kingsField = null;
+        for (Pole p : SzachyExec.szachownica.getFieldsOccupiedBy(t)) {
+            if (p.getFigura().getClass().equals(biali.krol.getClass())) {
+                kingsField = p;
+                break;
+            }
+        }
+        return kingsField;
+    }
+
+    private void defendTheKing(HashSet<Pole> whoJeopardises) {
+        final ArrayList<Pole> localTrans = new ArrayList<>(whoJeopardises);
+        Team.Teams kingsTeam = localTrans.get(0).getFigura().establishOpposite();
+        Pole kingsField = whereIsTheKing(kingsTeam);
+        ArrayList<Pole> routesOfDanger = new ArrayList<>();
+        HashMap<Pole, HashSet<Pole>> defendersAndTheirOptions = new HashMap<>();
+        for(Pole attacker: whoJeopardises){
+            int xTraversal = attacker.getxCoo() - kingsField.getxCoo();
+            int yTraversal = attacker.getyCoo() - kingsField.getyCoo();
+            if(xTraversal>0&&yTraversal>0){
+                while(xTraversal-->0&&yTraversal-->0){
+                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
+                }
+            }
+            else if(xTraversal>0&&yTraversal<0){
+                while(xTraversal-->0&&yTraversal++<0){
+                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
+                }
+            }
+            else if(xTraversal<0&&yTraversal<0){
+                while(xTraversal++<0&&yTraversal++<0){
+                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
+                }
+            }
+            else if(xTraversal<0&&yTraversal>0){
+                while(xTraversal++<0&&yTraversal-->0){
+                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
+                } 
+            }
+            else if(xTraversal>0&&yTraversal==0){
+                while(xTraversal-->0){
+                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
+                }
+             }
+            else if(xTraversal<0&&yTraversal==0){
+                while(xTraversal++<0){
+                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
+                }
+            }
+            else if(xTraversal==0&&yTraversal>0){
+                while(yTraversal-->0){
+                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
+                }
+            }
+            else{
+                while(yTraversal++<0){
+                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
+                }
+            }
+        }
+ 
+    }
+
+    private void updateDangerRoutes(ArrayList<Pole> routesOfDanger, Pole attacker, int xTraversal, int yTraversal) {
+        routesOfDanger.add(
+                SzachyExec.szachownica.seekField(attacker.getxCoo() + xTraversal,
+                        attacker.getyCoo() + yTraversal));
+    }
+}
+
+class FlashingFieldBorders implements ActionListener {
+
+    private final Pole pp;
+
+    public FlashingFieldBorders(Pole pp) {
+        this.pp = pp;
+    }
+    Color[] borderColors = {Color.WHITE, Color.GRAY};
+    Color[] oppositeTeamOcc = {Color.RED, Color.GRAY};
+    boolean flag = true;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (pp.isOccupied()) {
+            if (flag) {
+                pp.setBorder(BorderFactory.createLineBorder(oppositeTeamOcc[0], 5));
+                pp.repaint();
+                flag = false;
+            } else {
+                pp.setBorder(BorderFactory.createLineBorder(oppositeTeamOcc[1], 5));
+                pp.repaint();
+                flag = true;
+            }
+        } else {
+            if (flag) {
+                pp.setBorder(BorderFactory.createLineBorder(borderColors[0], 5));
+                pp.repaint();
+                flag = false;
+            } else {
+                pp.setBorder(BorderFactory.createLineBorder(borderColors[1], 5));
+                pp.repaint();
+                flag = true;
+            }
+        }
+
+    }
 }
