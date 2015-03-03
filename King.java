@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
  * @author X870
  */
 class King extends Figure {
+
     
     private HashSet<Pole> retVal;
 
@@ -47,39 +48,60 @@ class King extends Figure {
     HashSet<Pole> establishAvailableMoves() {
         retVal= new HashSet<>();
         if(this.getOccupiedField().getxCoo()+1<=maxX){
-            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()));
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1,
+                    this.getOccupiedField().getyCoo()));
         }
         if(this.getOccupiedField().getxCoo()-1>=0){
-            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()));
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1,
+                    this.getOccupiedField().getyCoo()));
         }
         if(this.getOccupiedField().getyCoo()+1<=maxY){
-            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(), this.getOccupiedField().getyCoo()+1));
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(),
+                    this.getOccupiedField().getyCoo()+1));
         }
         if(this.getOccupiedField().getyCoo()-1>=0){
-            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(), this.getOccupiedField().getyCoo()-1));
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo(),
+                    this.getOccupiedField().getyCoo()-1));
         }
         if(this.getOccupiedField().getxCoo()+1<=maxX&&this.getOccupiedField().getyCoo()+1<=maxY){
-            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()+1));
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1,
+                    this.getOccupiedField().getyCoo()+1));
         }
         if(this.getOccupiedField().getxCoo()-1>=0&&this.getOccupiedField().getyCoo()-1>=0){
-            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()-1));
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1,
+                    this.getOccupiedField().getyCoo()-1));
         }
         if(this.getOccupiedField().getxCoo()+1<=maxX&&this.getOccupiedField().getyCoo()-1>=0){
-            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1, this.getOccupiedField().getyCoo()-1));
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()+1,
+                    this.getOccupiedField().getyCoo()-1));
         }
         if(this.getOccupiedField().getxCoo()-1>=0&&this.getOccupiedField().getyCoo()-1<maxY){
-            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1, this.getOccupiedField().getyCoo()+1));
+            checkMoveAvailability(szachownica.seekField(this.getOccupiedField().getxCoo()-1,
+                    this.getOccupiedField().getyCoo()+1));
         }
         return retVal;
+    }
+    
+    boolean willKingBeJeopardized(Team.Teams t, Pole dodge) {
+        boolean retValue = false;
+        for (Pole p : SzachyExec.szachownica.getFieldsOccupiedBy(t.oppositeTeam())) {
+            HashSet<Pole> moves = p.getFigura().establishAvailableMoves();
+            if (moves.contains(dodge)) {
+                retValue = true;
+                break;
+            }
+        }
+        return retValue;
     }
     
     void checkMoveAvailability(Pole p){
         int xTraversal = p.getxCoo() - this.getOccupiedField().getxCoo();
         int yTraversal = p.getyCoo() -this.getOccupiedField().getyCoo();
-        if(!p.isOccupied()){
+        if(!p.isOccupied()&&!willKingBeJeopardized(this.team, p)){
             retVal.add(p);
         }
-        else if(p.isOccupied()&&p.getFigura().getTeam()==establishOpposite()){
+        else if((p.isOccupied()&&p.getFigura().getTeam()==establishOpposite())
+                &&!willKingBeJeopardized(this.team, p)){
             retVal.add(p);
         }
     }

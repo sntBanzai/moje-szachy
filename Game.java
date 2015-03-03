@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -31,9 +32,9 @@ import javax.swing.Timer;
  * @author Jerzy Małyszko
  */
 class Game {
-
+    
     private final static Logger logger = Logger.getLogger("Game.class");
-
+    
     static {
         Handler h;
         try {
@@ -56,7 +57,7 @@ class Game {
     Team.Teams[] tab = Team.Teams.values();
     int turnCounter = 0;
     AI komp;
-
+    
     Game() {
         biali = new Team(Team.Teams.Biali);
         czarni = new Team(Team.Teams.Czarni);
@@ -69,84 +70,85 @@ class Game {
         logger.log(lr);
         this.komp = new AI(Team.Teams.Biali, this);
     }
-
+    
     void playTheGame() {
         turn(Team.Teams.Biali, null);
-
+        
     }
-
+    
     void turn(final Team.Teams color, Timer t) {
         
         if (t != null) {
             t.stop();
         }
-
+        
         if (komp.getControlled() == color) {
             komp.doTurn();
         } else {
             HashSet<Pole> whoJeopardises;
             if ((whoJeopardises = isKingJeopardized(color)).size() > 0) {
+                logger.info("Król drużyny " + color + " jest szachowany przez drużynę przeciwną!");
                 defendTheKing(whoJeopardises);
             } else {
-            for (final Pole p : szachownica.getFieldsOccupiedBy(color)) {
-                p.addMouseListener(new MouseAdapter() {
-
-                    @Override
-                    public void mouseEntered(MouseEvent me) {
-                        p.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
-                    }
-
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        if (p.shouldIClearBorder()) {
-                            p.setBorder(null);
+                for (final Pole p : szachownica.getFieldsOccupiedBy(color)) {
+                    p.addMouseListener(new MouseAdapter() {
+                        
+                        @Override
+                        public void mouseEntered(MouseEvent me) {
+                            p.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
                         }
-                    }
-
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        eraseTimers();
-                        p.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
-                        p.setShouldIClearBorder(false);
-                        for (final Pole pp : p.getFigura().establishAvailableMoves()) {
-                            for (MouseListener ms : pp.getMouseListeners()) {
-                                pp.removeMouseListener(ms);
+                        
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            if (p.shouldIClearBorder()) {
+                                p.setBorder(null);
                             }
+                        }
+                        
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            eraseTimers();
+                            p.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+                            p.setShouldIClearBorder(false);
+                            for (final Pole pp : p.getFigura().establishAvailableMoves()) {
+                                for (MouseListener ms : pp.getMouseListeners()) {
+                                    pp.removeMouseListener(ms);
+                                }
                                 gt = new Timer(350, new FlashingFieldBorders(pp));
-                            gt.start();
-                            fieldTimers.add(gt);
-                            pp.addMouseListener(new MouseAdapter() {
-                                @Override
-                                public void mouseClicked(MouseEvent e) {
-                                    if (p.getFigura() == null) {
-                                        return;
-                                    }
+                                gt.start();
+                                fieldTimers.add(gt);
+                                pp.addMouseListener(new MouseAdapter() {
+                                    @Override
+                                    public void mouseClicked(MouseEvent e) {
+                                        if (p.getFigura() == null) {
+                                            return;
+                                        }
                                         if (pp.isOccupied()) {
-                                        pp.removeActualFigure();
-                                    }
-                                    p.getFigura().deployOnField(pp);
-                                    pp.repaint();
-                                    p.getFigura().releaseField(p);
-                                    p.repaint();
+                                            pp.removeActualFigure();
+                                        }
+                                        p.getFigura().deployOnField(pp);
+                                        pp.repaint();
+                                        p.getFigura().releaseField(p);
+                                        p.repaint();
                                         logger.log(Level.INFO, "Wykonano ruch z  "
                                                 + p.toString() + " na  " + pp.toString()
                                                 + ", druĹĽyna " + pp.getFigura().getTeam()
                                                 + ", figura " + pp.getFigura());
-                                    eraseTimers();
-                                    whichHaveListeners();
-                                    p.setShouldIClearBorder(true);
-                                    turn(pp.getFigura().establishOpposite(), null);
-                                }
-                            });
+                                        eraseTimers();
+                                        whichHaveListeners();
+                                        p.setShouldIClearBorder(true);
+                                        turn(pp.getFigura().establishOpposite(), null);
+                                    }
+                                });
+                            }
                         }
-                    }
-
-                });
+                        
+                    });
+                }
             }
         }
     }
-    }
-
+    
     final void deployFigures(Team t) {
         if (t.getName() == Team.Teams.Biali) {
             biali.pionki[0].deployOnField(szachownica.seekField('2', 'a'));
@@ -183,9 +185,9 @@ class Game {
             czarni.hetman.deployOnField(szachownica.seekField('8', 'd'));
             czarni.krol.deployOnField(szachownica.seekField('8', 'e'));
         }
-
+        
     }
-
+    
     void eraseTimers() {
         for (Timer t : fieldTimers) {
             t.stop();
@@ -194,22 +196,22 @@ class Game {
         for (Pole[] ololo : szachownica.getFieldSet()) {
             for (Pole borderRem : ololo) {
                 borderRem.setBorder(null);
-
+                
             }
         }
     }
-
+    
     void whichHaveListeners() {
         for (Pole[] ololo : szachownica.getFieldSet()) {
             for (Pole listenerRem : ololo) {
                 for (MouseListener ms : listenerRem.getMouseListeners()) {
                     listenerRem.removeMouseListener(ms);
-
+                    
                 }
             }
         }
     }
-
+    
     public HashSet<Pole> isKingJeopardized(Team.Teams t) {
         Pole kingsField = null;
         HashSet<Pole> whoJeopardiseses = new HashSet<>();
@@ -218,11 +220,11 @@ class Game {
             HashSet<Pole> moves = p.getFigura().establishAvailableMoves();
             if (moves.contains(kingsField)) {
                 whoJeopardiseses.add(p);
-}
+            }
         }
         return whoJeopardiseses;
     }
-
+    
     Pole whereIsTheKing(Team.Teams t) {
         Pole kingsField = null;
         for (Pole p : SzachyExec.szachownica.getFieldsOccupiedBy(t)) {
@@ -233,78 +235,160 @@ class Game {
         }
         return kingsField;
     }
-
-    private void defendTheKing(HashSet<Pole> whoJeopardises) {
+    
+    void defendTheKing(HashSet<Pole> whoJeopardises) {
         final ArrayList<Pole> localTrans = new ArrayList<>(whoJeopardises);
         Team.Teams kingsTeam = localTrans.get(0).getFigura().establishOpposite();
         Pole kingsField = whereIsTheKing(kingsTeam);
         ArrayList<Pole> routesOfDanger = new ArrayList<>();
-        HashMap<Pole, HashSet<Pole>> defendersAndTheirOptions = new HashMap<>();
-        for(Pole attacker: whoJeopardises){
+        routesOfDanger.addAll(whoJeopardises);
+        for (Pole attacker : whoJeopardises) {
             int xTraversal = attacker.getxCoo() - kingsField.getxCoo();
             int yTraversal = attacker.getyCoo() - kingsField.getyCoo();
-            if(xTraversal>0&&yTraversal>0){
-                while(xTraversal-->0&&yTraversal-->0){
+            if (xTraversal > 0 && yTraversal > 0) {
+                while (xTraversal-- > 0 && yTraversal-- > 0) {
                     updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
                 }
-            }
-            else if(xTraversal>0&&yTraversal<0){
-                while(xTraversal-->0&&yTraversal++<0){
+            } else if (xTraversal > 0 && yTraversal < 0) {
+                while (xTraversal-- > 0 && yTraversal++ < 0) {
                     updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
                 }
-            }
-            else if(xTraversal<0&&yTraversal<0){
-                while(xTraversal++<0&&yTraversal++<0){
+            } else if (xTraversal < 0 && yTraversal < 0) {
+                while (xTraversal++ < 0 && yTraversal++ < 0) {
                     updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
                 }
-            }
-            else if(xTraversal<0&&yTraversal>0){
-                while(xTraversal++<0&&yTraversal-->0){
-                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
-                } 
-            }
-            else if(xTraversal>0&&yTraversal==0){
-                while(xTraversal-->0){
+            } else if (xTraversal < 0 && yTraversal > 0) {
+                while (xTraversal++ < 0 && yTraversal-- > 0) {
                     updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
                 }
-             }
-            else if(xTraversal<0&&yTraversal==0){
-                while(xTraversal++<0){
+            } else if (xTraversal > 0 && yTraversal == 0) {
+                while (xTraversal-- > 0) {
                     updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
                 }
-            }
-            else if(xTraversal==0&&yTraversal>0){
-                while(yTraversal-->0){
+            } else if (xTraversal < 0 && yTraversal == 0) {
+                while (xTraversal++ < 0) {
                     updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
                 }
-            }
-            else{
-                while(yTraversal++<0){
+            } else if (xTraversal == 0 && yTraversal > 0) {
+                while (yTraversal-- > 0) {
+                    updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
+                }
+            } else {
+                while (yTraversal++ < 0) {
                     updateDangerRoutes(routesOfDanger, attacker, xTraversal, yTraversal);
                 }
             }
         }
- 
+        HashMap<Pole, HashSet<Pole>> defendersAndTheirOptions
+                = findDefenders(kingsTeam, kingsField, routesOfDanger);
+        if (kingsTeam == komp.getControlled()) {
+            komp.aquireData(defendersAndTheirOptions);
+        } else {
+            addListenersToDefenders(defendersAndTheirOptions);
+        }
     }
-
+    
+    private HashMap<Pole, HashSet<Pole>> findDefenders(Team.Teams kingsTeam, Pole kingsField,
+            ArrayList<Pole> routesOfDanger) {
+        HashMap<Pole, HashSet<Pole>> defendersAndTheirOptions = new HashMap<>();
+        for (Pole defender : SzachyExec.szachownica.getFieldsOccupiedBy(kingsTeam)) {
+            HashSet<Pole> ruchyRuchy = defender.getFigura().establishAvailableMoves();
+            HashSet<Pole> defensiveMoves = new HashSet<>();
+            if (defender == kingsField) {
+                for (Pole dodge : kingsField.getFigura().establishAvailableMoves()) {
+                    defensiveMoves.add(dodge);
+                }
+                defendersAndTheirOptions.put(defender, defensiveMoves);
+                continue;
+            }
+            for (Pole jeopardy : routesOfDanger) {
+                if (ruchyRuchy.contains(jeopardy)) {
+                    defensiveMoves.add(jeopardy);
+                }
+            }
+            defendersAndTheirOptions.put(defender, defensiveMoves);
+        }
+        return defendersAndTheirOptions;
+    }
+    
     private void updateDangerRoutes(ArrayList<Pole> routesOfDanger, Pole attacker, int xTraversal, int yTraversal) {
         routesOfDanger.add(
                 SzachyExec.szachownica.seekField(attacker.getxCoo() + xTraversal,
                         attacker.getyCoo() + yTraversal));
     }
+    
+    private void addListenersToDefenders(HashMap<Pole, HashSet<Pole>> defendersAndTheirOptions) {
+        for (Entry<Pole, HashSet<Pole>> ent : defendersAndTheirOptions.entrySet()) {
+            final Pole defender = ent.getKey();
+            final HashSet<Pole> moves = ent.getValue();
+            defender.addMouseListener(new MouseAdapter() {
+                
+                @Override
+                public void mouseEntered(MouseEvent me) {
+                    defender.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+                }
+                
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    if (defender.shouldIClearBorder()) {
+                        defender.setBorder(null);
+                    }
+                }
+                
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    eraseTimers();
+                    defender.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+                    defender.setShouldIClearBorder(false);
+                    for (final Pole pp : moves) {
+                        for (MouseListener ms : pp.getMouseListeners()) {
+                            pp.removeMouseListener(ms);
+                        }
+                        gt = new Timer(350, new FlashingFieldBorders(pp));
+                        gt.start();
+                        fieldTimers.add(gt);
+                        pp.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                if (defender.getFigura() == null) {
+                                    return;
+                                }
+                                if (pp.isOccupied()) {
+                                    pp.removeActualFigure();
+                                }
+                                defender.getFigura().deployOnField(pp);
+                                pp.repaint();
+                                defender.getFigura().releaseField(defender);
+                                defender.repaint();
+                                logger.log(Level.INFO, "Wykonano ruch z  "
+                                        + defender.toString() + " na  " + pp.toString()
+                                        + ", druĹĽyna " + pp.getFigura().getTeam()
+                                        + ", figura " + pp.getFigura());
+                                eraseTimers();
+                                whichHaveListeners();
+                                defender.setShouldIClearBorder(true);
+                                turn(pp.getFigura().establishOpposite(), null);
+                            }
+                        });
+                    }
+                }
+                
+            });
+        }
+    }
 }
 
 class FlashingFieldBorders implements ActionListener {
-
+    
     private final Pole pp;
-
+    
     public FlashingFieldBorders(Pole pp) {
         this.pp = pp;
     }
     Color[] borderColors = {Color.WHITE, Color.GRAY};
     Color[] oppositeTeamOcc = {Color.RED, Color.GRAY};
     boolean flag = true;
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (pp.isOccupied()) {
@@ -328,6 +412,6 @@ class FlashingFieldBorders implements ActionListener {
                 flag = true;
             }
         }
-
+        
     }
 }
