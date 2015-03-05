@@ -39,6 +39,7 @@ public class AI {
 
     void doTurn() {
         if (g.isKingJeopardized(controlled).size() > 0) {
+            System.out.println("Jest zagrożenie dla "+controlled);
             defendTheKing();
         } else {
             Pole chosen = null;

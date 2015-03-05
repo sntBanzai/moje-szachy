@@ -126,9 +126,10 @@ class Game {
                                         if (pp.isOccupied()) {
                                             pp.removeActualFigure();
                                         }
-                                        p.getFigura().deployOnField(pp);
+                                        Figure fig = p.getFigura();
+                                        fig.releaseField(p);
+                                        fig.deployOnField(pp);
                                         pp.repaint();
-                                        p.getFigura().releaseField(p);
                                         p.repaint();
                                         logger.log(Level.INFO, "Wykonano ruch z  "
                                                 + p.toString() + " na  " + pp.toString()
@@ -228,7 +229,7 @@ class Game {
     Pole whereIsTheKing(Team.Teams t) {
         Pole kingsField = null;
         for (Pole p : SzachyExec.szachownica.getFieldsOccupiedBy(t)) {
-            if (p.getFigura().getClass().equals(biali.krol.getClass())) {
+            if (p.getFigura().getClass().equals(King.class)) {
                 kingsField = p;
                 break;
             }
@@ -362,7 +363,7 @@ class Game {
                                 defender.repaint();
                                 logger.log(Level.INFO, "Wykonano ruch z  "
                                         + defender.toString() + " na  " + pp.toString()
-                                        + ", druĹĽyna " + pp.getFigura().getTeam()
+                                        + ", drużyna " + pp.getFigura().getTeam()
                                         + ", figura " + pp.getFigura());
                                 eraseTimers();
                                 whichHaveListeners();

@@ -68,26 +68,18 @@ class Bishop extends Figure {
     
     void checkMoveAvailability(Pole p){
         int xTraversal = p.getxCoo()- auxiliary.getxCoo();
-        System.out.println("xTraversal "+xTraversal);
         int yTraversal = p.getyCoo() - auxiliary.getyCoo();
-        System.out.println("yTraversal "+yTraversal);
         if(!p.isOccupied()){
             retVal.add(p);
             auxiliary = p;
             if((xTraversal>0&&p.getxCoo()==maxX)||(yTraversal>0&&p.getyCoo()==maxY)||(xTraversal<0&&p.getxCoo()==0)||(yTraversal<0&&p.getyCoo()==0)){
-                System.out.println("now i'm here");
-                System.out.println(p.getLiczba() +" "+ p.getLitera());
                 return;
             }
             else {
-                System.out.println("now i'm there");
-                System.out.println(p.getLiczba() +" "+ p.getLitera());
                 checkMoveAvailability(szachownica.seekField(p.getxCoo()+xTraversal, p.getyCoo()+yTraversal)); 
             }
         }
         else if(p.isOccupied()&&p.getFigura().getTeam()==establishOpposite()){
-            System.out.println("down in the city just you and me");
-            System.out.println(p.getLiczba() +" "+ p.getLitera());
             retVal.add(p);
         }
     }
