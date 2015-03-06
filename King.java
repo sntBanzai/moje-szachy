@@ -87,6 +87,13 @@ class King extends Figure {
         breakPoint:
         for (Pole p : SzachyExec.szachownica.getFieldsOccupiedBy(t.oppositeTeam())) {
             if(p.getFigura().getClass()==King.class) continue;
+            if(p.getFigura().getClass()==Pawn.class){
+                if(p.getxCoo()-this.getOccupiedField().getxCoo()>1) continue;
+                if(p.getxCoo()-this.getOccupiedField().getxCoo()<-1) continue;
+                if(p.getxCoo()==this.getOccupiedField().getxCoo()) continue;
+                if(p.getyCoo()>=this.getOccupiedField().getyCoo()) continue;
+                if(p.getyCoo()<this.getOccupiedField().getyCoo()) continue;
+            }
             HashSet<Pole> moves = p.getFigura().establishAvailableMoves();
             System.out.println("Sprawdzam zagrożenie dla pola "+dodge+" ze strony figury drużyny "+p.getFigura().getTeam()+" "+p.getFigura());
             for (Pole move : moves) { 
@@ -97,9 +104,7 @@ class King extends Figure {
                         retValue = true;
                         break breakPoint;
                     }
-                } else {
-                    continue;
-                }
+                } 
             }
         }
         return retValue;

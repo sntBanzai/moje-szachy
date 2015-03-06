@@ -131,7 +131,7 @@ public class AI {
     }
 
     void aquireData(HashMap<Pole, HashSet<Pole>> defsAndOptions) {
-
+        whenJeopardized = defsAndOptions;
     }
 
 }
