@@ -25,11 +25,9 @@ final class Pawn extends Figure {
     Pawn(Team.Teams team) {
         this.team = team;
         this.rank = 1;
-        File f1 = new File(Path+"whitePawn.jpg");
-        File f2 = new File(Path+"blackPawn.jpg");
         if(team==Team.Teams.Biali){
             try {
-                ikona = ImageIO.read(f1);
+                ikona = ImageIO.read(getClass().getResource("/images/whitePawn.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku (pionek)");
@@ -37,7 +35,7 @@ final class Pawn extends Figure {
         }
         else if(team==Team.Teams.Czarni){
             try {
-                ikona = ImageIO.read(f2);
+                ikona = ImageIO.read(getClass().getResource("/images/blackPawn.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku (pionek)");

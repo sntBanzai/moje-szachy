@@ -21,11 +21,9 @@ final class Knight extends Figure {
     Knight(Team.Teams team) {
         this.team = team;
         this.rank = 2;
-        File f1 = new File(Path+"whiteKnight.jpg");
-        File f2 = new File(Path+"blackKnight.jpg");
         if(team==Team.Teams.Biali){
             try {
-                ikona = ImageIO.read(f1);
+                ikona = ImageIO.read(getClass().getResource("/images/whiteKnight.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku obrazka (koń)");
@@ -33,7 +31,7 @@ final class Knight extends Figure {
         }
         else if(team==Team.Teams.Czarni){
             try {
-                ikona = ImageIO.read(f2);
+                ikona = ImageIO.read(getClass().getResource("/images/blackKnight.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku obrazka (koń)");

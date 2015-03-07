@@ -24,11 +24,9 @@ class Bishop extends Figure {
     Bishop(Team.Teams team) {
         this.team = team;
         this.rank = 2;
-        File f1 = new File(Path+"whiteBishop.jpg");
-        File f2 = new File(Path+"blackBishop.jpg");
         if(team==Team.Teams.Biali){
             try {
-                ikona = ImageIO.read(f1);
+                ikona = ImageIO.read(getClass().getResource("/images/whiteBishop.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku obrazka (goniec)");
@@ -36,7 +34,7 @@ class Bishop extends Figure {
         }
         else if(team==Team.Teams.Czarni){
             try {
-                ikona = ImageIO.read(f2);
+                ikona = ImageIO.read(getClass().getResource("/images/blackBishop.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku obrazka (goniec)");

@@ -28,11 +28,9 @@ class Rook extends Figure {
     Rook(Team.Teams team) {
         this.team = team;
         this.rank = 2;
-        File f1 = new File(Path+"whiteRook.jpg");
-        File f2 = new File(Path+"blackRook.jpg");
         if(team==Team.Teams.Biali){
             try {
-                ikona = ImageIO.read(f1);
+                ikona = ImageIO.read(getClass().getResource("/images/whiteRook.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku obrazka (wieża)");
@@ -40,7 +38,7 @@ class Rook extends Figure {
         }
         else if(team==Team.Teams.Czarni){
             try {
-                ikona = ImageIO.read(f2);
+                ikona = ImageIO.read(getClass().getResource("/images/blackRook.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku obrazka (wieża)");

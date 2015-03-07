@@ -23,11 +23,11 @@ class King extends Figure {
     King(Team.Teams team) {
         this.team = team;
         this.rank = 10;
-        File f1 = new File(Path+"whiteKing.jpg");
-        File f2 = new File(Path+"blackKing.jpg");
+
         if(team==Team.Teams.Biali){
+
             try {
-                ikona = ImageIO.read(f1);
+                ikona = ImageIO.read(getClass().getResource("/images/whiteKing.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("BĹ‚Ä…d przy odczycie pliku obrazka (krĂłl)");
@@ -35,7 +35,7 @@ class King extends Figure {
         }
         else if(team==Team.Teams.Czarni){
             try {
-                ikona = ImageIO.read(f2);
+                ikona = ImageIO.read(getClass().getResource("/images/blackKing.jpg"));
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("BĹ‚Ä…d przy odczycie pliku obrazka (krĂłl)");
