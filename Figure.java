@@ -5,6 +5,7 @@
  */
 package com.mycompany.szachy;
 
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashSet;
@@ -50,6 +51,9 @@ abstract class Figure {
     static int maxX = szachownica.fieldSet[0].length - 1;
     static int maxY = szachownica.fieldSet.length - 1;
     int rank;
+    
+    private static int figureWidth = establishFigureWidth();
+    private static int figureHeight = establishFigureHeight();
 
     /**
      * Bezparametrowy konstruktor automaycznie ustanawiający wartość
@@ -139,6 +143,24 @@ abstract class Figure {
 
     public int getRank() {
         return rank;
+    }
+
+    public static int getFigureWidth() {
+        return figureWidth;
+    }
+
+    public static int getFigureHeight() {
+        return figureHeight;
+    }
+    
+    private static int establishFigureWidth(){
+        int w = SzachyExec.szachownica.fieldSet[0][0].getWidth();
+        return (int) (w*0.85);
+    }
+    
+    private static int establishFigureHeight(){
+        int w = SzachyExec.szachownica.fieldSet[0][0].getHeight();
+        return (int) (w*0.85);
     }
 
 }

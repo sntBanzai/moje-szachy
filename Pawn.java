@@ -5,6 +5,7 @@
  */
 package com.mycompany.szachy;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -28,6 +29,10 @@ final class Pawn extends Figure {
         if(team==Team.Teams.Biali){
             try {
                 ikona = ImageIO.read(getClass().getResource("/images/whitePawn.jpg"));
+                BufferedImage transit = new BufferedImage(Figure.getFigureWidth(), Figure.getFigureHeight(), BufferedImage.SCALE_SMOOTH);
+                Graphics2D g = (Graphics2D) transit.getGraphics();
+                g.drawImage(ikona, 0, 0, Figure.getFigureWidth(), Figure.getFigureHeight(), null);
+                ikona = transit;
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku (pionek)");
@@ -36,6 +41,10 @@ final class Pawn extends Figure {
         else if(team==Team.Teams.Czarni){
             try {
                 ikona = ImageIO.read(getClass().getResource("/images/blackPawn.jpg"));
+                BufferedImage transit = new BufferedImage(Figure.getFigureWidth(), Figure.getFigureHeight(), BufferedImage.SCALE_SMOOTH);
+                Graphics2D g = (Graphics2D) transit.getGraphics();
+                g.drawImage(ikona, 0, 0, Figure.getFigureWidth(), Figure.getFigureHeight(), null);
+                ikona = transit;
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku (pionek)");

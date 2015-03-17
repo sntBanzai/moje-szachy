@@ -89,7 +89,7 @@ public class Pole extends JLabel {
 
     private void drawFigure(Graphics2D g2d) {
         if (figura != null) {
-            g2d.drawImage(figura.getIkona(), 10, 10, null);
+            g2d.drawImage(figura.getIkona(), (int)(this.getWidth()*0.075), (int)(this.getHeight()*0.075), null);
         }
     }
 

@@ -5,6 +5,8 @@
  */
 package com.mycompany.szachy;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -27,6 +29,10 @@ class Bishop extends Figure {
         if(team==Team.Teams.Biali){
             try {
                 ikona = ImageIO.read(getClass().getResource("/images/whiteBishop.jpg"));
+                BufferedImage transit = new BufferedImage(Figure.getFigureWidth(), Figure.getFigureHeight(), BufferedImage.SCALE_SMOOTH);
+                Graphics2D g = (Graphics2D) transit.getGraphics();
+                g.drawImage(ikona, 0, 0, Figure.getFigureWidth(), Figure.getFigureHeight(), null);
+                ikona = transit;
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku obrazka (goniec)");
@@ -35,6 +41,10 @@ class Bishop extends Figure {
         else if(team==Team.Teams.Czarni){
             try {
                 ikona = ImageIO.read(getClass().getResource("/images/blackBishop.jpg"));
+                BufferedImage transit = new BufferedImage(Figure.getFigureWidth(), Figure.getFigureHeight(), BufferedImage.SCALE_SMOOTH);
+                Graphics2D g = (Graphics2D) transit.getGraphics();
+                g.drawImage(ikona, 0, 0, Figure.getFigureWidth(), Figure.getFigureHeight(), null);
+                ikona = transit;
             } catch (IOException ex) {
                 Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Błąd przy odczycie pliku obrazka (goniec)");
@@ -66,26 +76,18 @@ class Bishop extends Figure {
     
     void checkMoveAvailability(Pole p){
         int xTraversal = p.getxCoo()- auxiliary.getxCoo();
-        System.out.println("xTraversal "+xTraversal);
         int yTraversal = p.getyCoo() - auxiliary.getyCoo();
-        System.out.println("yTraversal "+yTraversal);
         if(!p.isOccupied()){
             retVal.add(p);
             auxiliary = p;
             if((xTraversal>0&&p.getxCoo()==maxX)||(yTraversal>0&&p.getyCoo()==maxY)||(xTraversal<0&&p.getxCoo()==0)||(yTraversal<0&&p.getyCoo()==0)){
-                System.out.println("now i'm here");
-                System.out.println(p.getLiczba() +" "+ p.getLitera());
                 return;
             }
             else {
-                System.out.println("now i'm there");
-                System.out.println(p.getLiczba() +" "+ p.getLitera());
                 checkMoveAvailability(szachownica.seekField(p.getxCoo()+xTraversal, p.getyCoo()+yTraversal)); 
             }
         }
         else if(p.isOccupied()&&p.getFigura().getTeam()==establishOpposite()){
-            System.out.println("down in the city just you and me");
-            System.out.println(p.getLiczba() +" "+ p.getLitera());
             retVal.add(p);
         }
     }
