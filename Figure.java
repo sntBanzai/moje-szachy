@@ -5,6 +5,7 @@
  */
 package com.mycompany.szachy;
 
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -161,6 +162,13 @@ abstract class Figure {
     private static int establishFigureHeight(){
         int w = SzachyExec.szachownica.fieldSet[0][0].getHeight();
         return (int) (w*0.85);
+    }
+
+    protected void adjustImage() {
+        BufferedImage transit = new BufferedImage(Figure.getFigureWidth(), Figure.getFigureHeight(), BufferedImage.SCALE_SMOOTH);
+        Graphics2D g = (Graphics2D) transit.getGraphics();
+        g.drawImage(ikona, 0, 0, Figure.getFigureWidth(), Figure.getFigureHeight(), null);
+        ikona = transit;
     }
 
 }

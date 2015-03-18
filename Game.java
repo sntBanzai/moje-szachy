@@ -296,10 +296,10 @@ class Game {
             HashSet<Pole> ruchyRuchy = defender.getFigura().establishAvailableMoves();
             HashSet<Pole> defensiveMoves = new HashSet<>();
             if (defender == kingsField) {
-                for (Pole dodge : kingsField.getFigura().establishAvailableMoves()) {
+                for (Pole dodge : ruchyRuchy) {
                     defensiveMoves.add(dodge);
                 }
-                if (defendersAndTheirOptions.size() > 0) {
+                if (defensiveMoves.size() > 0) {
                     defendersAndTheirOptions.put(defender, defensiveMoves);
                 }
                 continue;
@@ -309,7 +309,7 @@ class Game {
                     defensiveMoves.add(jeopardy);
                 }
             }
-            if (defendersAndTheirOptions.size() > 0) {
+            if (defensiveMoves.size() > 0) {
                 defendersAndTheirOptions.put(defender, defensiveMoves);
             }
         }
