@@ -10,6 +10,9 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +30,7 @@ public class AI {
     private Team.Teams controlled;
     private Game g;
     private Timer t;
+    private HashMap<Pole, HashSet<Pole>> whenJeopardized;
 
     public AI(Team.Teams controlled, Game g) {
         this.controlled = controlled;
@@ -34,34 +38,39 @@ public class AI {
     }
 
     void doTurn() {
-        Pole chosen = null;
-        Pole destination = null;
-        boolean ersties = true;
-        for (Pole p : szachownica.getFieldsOccupiedBy(this.getControlled())) {
-            for (Pole pp : p.getFigura().establishAvailableMoves()) {
-                if (pp.isOccupied() && pp.getFigura().getTeam() != controlled) {
-                    if (ersties) {
-                        destination = pp;
-                        chosen = p;
-                        ersties = false;
-                    }
-                    if (destination != null && destination.getFigura().getRank() < pp.getFigura().getRank()) {
-                        destination = pp;
-                        chosen = p;
+        if (g.isKingJeopardized(controlled).size() > 0) {
+            System.out.println("Jest zagrożenie dla "+controlled);
+            defendTheKing();
+        } else {
+            Pole chosen = null;
+            Pole destination = null;
+            boolean ersties = true;
+            for (Pole p : szachownica.getFieldsOccupiedBy(this.getControlled())) {
+                for (Pole pp : p.getFigura().establishAvailableMoves()) {
+                    if (pp.isOccupied() && pp.getFigura().getTeam() != controlled) {
+                        if (ersties) {
+                            destination = pp;
+                            chosen = p;
+                            ersties = false;
+                        }
+                        if (destination != null && destination.getFigura().getRank() < pp.getFigura().getRank()) {
+                            destination = pp;
+                            chosen = p;
+                        }
                     }
                 }
             }
+            if (chosen == null) {
+                ArrayList<Pole> transformed = new ArrayList(szachownica.getFieldsOccupiedBy(this.getControlled()));
+                do {
+                    chosen = transformed.get(new Random().nextInt(transformed.size()));
+                } while (chosen.getFigura().establishAvailableMoves().size() < 1);
+                transformed = new ArrayList<>(chosen.getFigura().establishAvailableMoves());
+                destination = transformed.get(new Random().nextInt(transformed.size()));
+            }
+            showWhereYoullMove(chosen, destination);
+            move(chosen, destination);
         }
-        if (chosen == null) {
-            ArrayList<Pole> transformed = new ArrayList(szachownica.getFieldsOccupiedBy(this.getControlled()));
-            do {
-                chosen = transformed.get(new Random().nextInt(transformed.size()));
-            } while (chosen.getFigura().establishAvailableMoves().size() < 1);
-            transformed = new ArrayList<>(chosen.getFigura().establishAvailableMoves());
-            destination = transformed.get(new Random().nextInt(transformed.size()));
-        }
-        showWhereYoullMove(chosen, destination);
-        move(chosen, destination);
     }
 
     private void showWhereYoullMove(Pole chosen, Pole destination) {
@@ -78,15 +87,15 @@ public class AI {
     public Team.Teams getControlled() {
         return controlled;
     }
-    
-    private void move(final Pole fromWhere, final Pole where){
+
+    private void move(final Pole fromWhere, final Pole where) {
         t = new Timer(3000, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 fromWhere.setBorder(null);
                 where.setBorder(null);
-                if(where.isOccupied()){
+                if (where.isOccupied()) {
                     where.removeActualFigure();
                 }
                 fromWhere.getFigura().deployOnField(where);
@@ -97,11 +106,32 @@ public class AI {
                         + where.toString() + ", drużyna " + where.getFigura().getTeam()
                         + ", figura " + where.getFigura());
                 g.turn(where.getFigura().establishOpposite(), t);
-               
+
             }
         });
         t.start();
-        
+
+    }
+
+    private void defendTheKing() {
+        g.defendTheKing(g.isKingJeopardized(controlled));
+        Pole chosen = null;
+        Pole destination = null;
+        for (Entry<Pole, HashSet<Pole>> ent : whenJeopardized.entrySet()) {
+            if ((chosen != null) && (ent.getKey().getFigura().getRank() < chosen.getFigura().getRank())) {
+                chosen = ent.getKey();
+            } else if (chosen == null) {
+                chosen = ent.getKey();
+            }
+        }
+        ArrayList<Pole> destinations = new ArrayList<>(chosen.getFigura().establishAvailableMoves());
+        destination = destinations.get(new Random().nextInt(destinations.size()));
+        showWhereYoullMove(chosen, destination);
+        move(chosen, destination);
+    }
+
+    void aquireData(HashMap<Pole, HashSet<Pole>> defsAndOptions) {
+        whenJeopardized = defsAndOptions;
     }
 
 }

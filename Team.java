@@ -9,7 +9,8 @@ package com.mycompany.szachy;
  *
  * @author Jerzy Malyszko
  */
- class Team{
+class Team {
+
     Teams name;
     Pawn[] pionki = new Pawn[8];
     Bishop[] gonce = new Bishop[2];
@@ -18,7 +19,7 @@ package com.mycompany.szachy;
     Queen hetman;
     King krol;
 
-    Team(Teams name){
+    Team(Teams name) {
         this.name = name;
         for (int i = 0; i < pionki.length; i++) {
             pionki[i] = new Pawn(name);
@@ -35,13 +36,37 @@ package com.mycompany.szachy;
         hetman = new Queen(name);
         krol = new King(name);
     }
-    
+
     public Teams getName() {
         return name;
     }
-    
-    enum Teams {
-        Biali, Czarni
-        
+
+    public Teams oppositeTeam() {
+        Team.Teams retVal = null;
+        for (Team.Teams t : Team.Teams.values()) {
+            if (t == this.getName()) {
+                continue;
+            }
+            retVal = t;
+        }
+        return retVal;
     }
+
+    enum Teams {
+
+        Biali, Czarni;
+
+        Teams oppositeTeam() {
+            Team.Teams retVal = null;
+            for (Team.Teams t : Team.Teams.values()) {
+                if (t.name().equals(this.name())) {
+                    continue;
+                }
+                retVal = t;
+            }
+            return retVal;
+
+        }
+    }
+
 }
